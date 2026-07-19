@@ -1,13 +1,16 @@
 package fr.smssansfrontiere;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+
+    private TextView numeroAffiche;
+    private TextView messageAffiche;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,22 +26,42 @@ public class MainActivity extends Activity {
         titre.setTextSize(28);
         titre.setGravity(Gravity.CENTER);
 
-        TextView statut = new TextView(this);
-        statut.setText("\nVersion 0.2");
-        statut.setTextSize(18);
-        statut.setGravity(Gravity.CENTER);
+        numeroAffiche = new TextView(this);
+        numeroAffiche.setText("\nAucun numéro reçu");
+        numeroAffiche.setTextSize(18);
+        numeroAffiche.setGravity(Gravity.CENTER);
 
-        Button boutonTester = new Button(this);
-        boutonTester.setText("Tester");
-
-        boutonTester.setOnClickListener(v ->
-            statut.setText("\nBonjour Erwan !")
-        );
+        messageAffiche = new TextView(this);
+        messageAffiche.setText("\nAucun message reçu");
+        messageAffiche.setTextSize(18);
+        messageAffiche.setGravity(Gravity.CENTER);
 
         page.addView(titre);
-        page.addView(statut);
-        page.addView(boutonTester);
+        page.addView(numeroAffiche);
+        page.addView(messageAffiche);
 
         setContentView(page);
+
+        lireCommande(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        lireCommande(intent);
+    }
+
+    private void lireCommande(Intent intent) {
+        String numero = intent.getStringExtra("numero");
+        String message = intent.getStringExtra("message");
+
+        if (numero != null) {
+            numeroAffiche.setText("\nNuméro reçu :\n" + numero);
+        }
+
+        if (message != null) {
+            messageAffiche.setText("\nMessage reçu :\n" + message);
+        }
     }
 }
